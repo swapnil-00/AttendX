@@ -16,7 +16,7 @@ const app = express();
 const corsOrigins = process.env.CORS_ORIGINS 
   ? process.env.CORS_ORIGINS.split(',').map(o => o.trim())
   : process.env.NODE_ENV === 'production'
-  ? ['https://your-app.vercel.app'] // Update this with your Vercel domain
+  ? ['https://attend-x-btk6.vercel.app'] // Update this with your Vercel domain
   : ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
 app.use(cors({ 
@@ -25,15 +25,26 @@ app.use(cors({
 }));
 
 // Rate limiting - 100 requests per 15 minutes per IP
+// Configure for Vercel's proxy
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: { error: 'Too many requests, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
+  // Use X-Forwarded-For header from Vercel proxy
+  keyGenerator: (req) => {
+    return req.headers['x-forwarded-for']?.split(',')[0] || 
+           req.headers['x-real-ip'] || 
+           req.ip || 
+           'unknown';
+  },
 });
 
-app.use('/api/', limiter);
+// Only apply rate limiting in production
+if (process.env.NODE_ENV === 'production') {
+  app.use('/api/', limiter);
+}
 app.use(express.json({ limit: '10mb' }));
 
 // Health check endpoint
