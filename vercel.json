@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "cd client && npm install && npm run build && cd .. && mkdir -p dist && cp -r client/dist/* dist/",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
   "rewrites": [
     {
       "source": "/api/:path*",
