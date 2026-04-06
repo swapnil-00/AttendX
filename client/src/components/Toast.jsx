@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 let toastId = 0;
 const listeners = [];
@@ -11,6 +12,7 @@ export function showToast(msg, type = 'success') {
 }
 
 export default function ToastContainer() {
+  const { colors, isDark } = useTheme();
   const [toasts, setToasts] = useState([]);
 
   useEffect(() => {
@@ -52,23 +54,23 @@ export default function ToastContainer() {
               display: 'flex',
               alignItems: 'center',
               gap: 'clamp(6px, 1.5vw, 8px)',
-              background: isError ? '#450a0a' : '#111827',
-              color: '#ffffff',
+              background: isError ? colors.errorBg : (isDark ? '#1a1a1a' : '#111827'),
+              color: isDark ? colors.text : '#ffffff',
               padding: 'clamp(9px, 1.8vw, 10px) clamp(12px, 2.5vw, 16px)',
               borderRadius: 'clamp(8px, 1.5vw, 10px)',
               fontSize: 'clamp(0.8rem, 1.8vw, 0.875rem)',
               fontWeight: 500,
               boxShadow: isError
-                ? '0 4px 16px rgba(220,38,38,0.25)'
-                : '0 4px 16px rgba(0,0,0,0.18)',
+                ? (isDark ? '0 4px 16px rgba(239,68,68,0.4)' : '0 4px 16px rgba(220,38,38,0.25)')
+                : (isDark ? '0 4px 16px rgba(0,0,0,0.6)' : '0 4px 16px rgba(0,0,0,0.18)'),
               minWidth: 'clamp(200px, 50vw, 250px)',
-              border: isError ? '1px solid #7f1d1d' : '1px solid transparent',
+              border: isError ? `1px solid ${colors.errorLight}` : '1px solid transparent',
               wordBreak: 'break-word',
             }}
           >
             {isError
-              ? <XCircle size={window.innerWidth < 640 ? 15 : 16} color="#f87171" strokeWidth={2.5} />
-              : <CheckCircle2 size={window.innerWidth < 640 ? 15 : 16} color="#4ade80" strokeWidth={2.5} />
+              ? <XCircle size={window.innerWidth < 640 ? 15 : 16} color={colors.error} strokeWidth={2.5} />
+              : <CheckCircle2 size={window.innerWidth < 640 ? 15 : 16} color={colors.success} strokeWidth={2.5} />
             }
             {t.msg}
           </div>
