@@ -1,0 +1,179 @@
+/* Fix #6 — Removed @import "tailwindcss" which caused CSP violations.
+   animate-spin is replaced with the keyframe below. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #ffffff;
+  color: #0a0a0a;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Spin animation — replaces Tailwind's animate-spin */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 0.7s linear infinite;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { height: 6px; width: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Attendance pill transitions */
+.att-pill {
+  transition: all 150ms ease;
+  cursor: pointer;
+  user-select: none;
+}
+.att-pill:hover:not(:disabled) { transform: scale(1.08); }
+.att-pill:active:not(:disabled) { transform: scale(0.96); }
+.att-pill:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Toast slide-in / out */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0; }
+}
+.toast-in  { animation: slideInRight 0.3s ease forwards; }
+.toast-out { animation: slideOutRight 0.3s ease forwards; }
+
+/* Skeleton pulse */
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.skeleton {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+  background: #e5e7eb;
+  border-radius: 6px;
+}
+
+/* Table hover rows */
+.table-row-hover { 
+  background: #ffffff;
+}
+.table-row-hover:hover { 
+  background-color: #f9fafb !important; 
+}
+
+/* Fade-in for content */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+
+/* Heartbeat animation for footer */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  10%, 30% { transform: scale(1.1); }
+  20%, 40% { transform: scale(1); }
+}
+
+/* Input focus ring */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #0a0a0a;
+}
+
+/* Stat card hover number */
+.stat-card:hover .stat-number { color: #111827; }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  /* Reduce animations on mobile for better performance */
+  .stat-card {
+    transition: none !important;
+  }
+  
+  .att-pill:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Fix #15 — Mobile responsive navbar: hide button text on very small screens */
+@media (max-width: 640px) {
+  .nav-btn-text { display: none; }
+  
+  /* Optimize touch targets for mobile */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Mobile table scrolling hint */
+@media (max-width: 768px) {
+  .table-scroll-hint {
+    display: block;
+    text-align: center;
+    padding: 8px;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    margin: 12px 16px;
+  }
+}
+
+@media (min-width: 769px) {
+  .table-scroll-hint {
+    display: none;
+  }
+}
+
+/* Improve mobile viewport */
+@media (max-width: 640px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  input, select, button {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+}
+
+/* Sticky table column fix */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Ensure sticky columns work on mobile */
+.table-row-hover {
+  background: #ffffff;
+}
+
+.table-row-hover:hover {
+  background-color: #f9fafb;
+}
+
+/* Fix for sticky positioning on iOS */
+@supports (-webkit-overflow-scrolling: touch) {
+  table th[style*="position: sticky"],
+  table td[style*="position: sticky"] {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+}
