@@ -8,9 +8,6 @@ export default defineConfig({
     tailwindcss(),
   ],
   build: {
-    // Output to repo root /dist so Vercel finds it at the default location
-    outDir: '../dist',
-    emptyOutDir: true,
     chunkSizeWarningLimit: 600,
   },
   server: {
