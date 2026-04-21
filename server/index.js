@@ -16,7 +16,7 @@ const app = express();
 const corsOrigins = process.env.CORS_ORIGINS 
   ? process.env.CORS_ORIGINS.split(',').map(o => o.trim())
   : process.env.NODE_ENV === 'production'
-  ? ['https://attend-x-btk6.vercel.app'] // Update this with your Vercel domain
+  ? ['https://attend-x-btk6.vercel.app']
   : ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
 app.use(cors({ 
