@@ -2,6 +2,12 @@
    animate-spin is replaced with the keyframe below. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
+/* Force light color scheme — prevents browser dark mode from auto-inverting
+   hardcoded colors and causing the black/white mixed appearance */
+:root {
+  color-scheme: light;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -65,12 +71,20 @@ body {
   border-radius: 6px;
 }
 
-/* Table hover rows */
-.table-row-hover { 
+/* Table row hover — defined ONCE */
+.table-row-hover {
   background: #ffffff;
 }
-.table-row-hover:hover { 
-  background-color: #f9fafb !important; 
+.table-row-hover:hover {
+  background-color: #f9fafb;
+}
+
+/* Sticky Name column — background follows row hover correctly */
+.sticky-name-cell {
+  background: #ffffff;
+}
+.table-row-hover:hover .sticky-name-cell {
+  background: #f9fafb;
 }
 
 /* Fade-in for content */
@@ -154,20 +168,7 @@ input:focus {
   }
 }
 
-/* Sticky table column fix */
-table {
-  border-collapse: separate;
-  border-spacing: 0;
-}
 
-/* Ensure sticky columns work on mobile */
-.table-row-hover {
-  background: #ffffff;
-}
-
-.table-row-hover:hover {
-  background-color: #f9fafb;
-}
 
 /* Fix for sticky positioning on iOS */
 @supports (-webkit-overflow-scrolling: touch) {

@@ -375,12 +375,15 @@ export default function AttendanceTable({
                     }}
                   >
                     {/* Sticky name cell */}
-                    <td style={{
-                      padding: '10px 16px', fontWeight: 500, fontSize: '0.875rem',
-                      color: '#111827', whiteSpace: 'nowrap',
-                      position: 'sticky', left: 0, background: '#ffffff',
-                      borderRight: '1px solid #f3f4f6', zIndex: 4,
-                    }}>
+                    <td
+                      className="sticky-name-cell"
+                      style={{
+                        padding: '10px 16px', fontWeight: 500, fontSize: '0.875rem',
+                        color: '#111827', whiteSpace: 'nowrap',
+                        position: 'sticky', left: 0,
+                        borderRight: '1px solid #f3f4f6', zIndex: 4,
+                      }}
+                    >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{
                           width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
