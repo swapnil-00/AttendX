@@ -2,23 +2,16 @@
    animate-spin is replaced with the keyframe below. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-/* Force light color scheme — prevents browser dark mode from auto-inverting
-   hardcoded colors and causing the black/white mixed appearance */
+/* CSS custom properties — kept in sync with ThemeContext.jsx */
 :root {
-  color-scheme: light;
+  --bg:      #ffffff;
+  --bg-hover: #f9fafb;
+}
+html.dark {
+  --bg:      #141414;
+  --bg-hover: #1f1f1f;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #ffffff;
-  color: #0a0a0a;
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-}
 
 /* Spin animation — replaces Tailwind's animate-spin */
 @keyframes spin {
@@ -71,20 +64,20 @@ body {
   border-radius: 6px;
 }
 
-/* Table row hover — defined ONCE */
+/* Table row hover — uses CSS vars so it works in both light and dark */
 .table-row-hover {
-  background: #ffffff;
+  background: var(--bg);
 }
 .table-row-hover:hover {
-  background-color: #f9fafb;
+  background: var(--bg-hover);
 }
 
-/* Sticky Name column — background follows row hover correctly */
+/* Sticky Name column — follows row hover correctly in both themes */
 .sticky-name-cell {
-  background: #ffffff;
+  background: var(--bg);
 }
 .table-row-hover:hover .sticky-name-cell {
-  background: #f9fafb;
+  background: var(--bg-hover);
 }
 
 /* Fade-in for content */
