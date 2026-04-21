@@ -1,8 +1,9 @@
 import { Users, UserCheck, UserX, BarChart2 } from 'lucide-react';
 import { normalizeDate, getTodayString } from '../utils/dateUtils';
 import { useTheme } from '../context/ThemeContext';
+import { useIsMobile } from '../hooks/useIsMobile'; // Fix #6
 
-const StatCard = ({ icon: Icon, label, value, color, bg, colors }) => (
+const StatCard = ({ icon: Icon, label, value, color, bg, colors, isMobile }) => (
   <div
     className="stat-card"
     style={{
@@ -11,7 +12,7 @@ const StatCard = ({ icon: Icon, label, value, color, bg, colors }) => (
       borderRadius: 'clamp(12px, 2vw, 16px)',
       padding: 'clamp(16px, 3vw, 24px)',
       boxShadow: `0 1px 3px ${colors.shadow}`,
-      flex: '1 1 180px',   /* 4 per row on desktop, 2 on tablet, 1 on mobile */
+      flex: '1 1 180px',
       minWidth: 0,
       transition: 'box-shadow 200ms ease, transform 200ms ease',
       cursor: 'default',
@@ -35,7 +36,8 @@ const StatCard = ({ icon: Icon, label, value, color, bg, colors }) => (
         </p>
       </div>
       <div style={{ width: 'clamp(36px, 6vw, 40px)', height: 'clamp(36px, 6vw, 40px)', borderRadius: 'clamp(8px, 1.5vw, 10px)', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Icon size={window.innerWidth < 640 ? 18 : 20} color={color} strokeWidth={2} />
+        {/* Fix #6 — isMobile passed as prop rather than reading window.innerWidth */}
+        <Icon size={isMobile ? 18 : 20} color={color} strokeWidth={2} />
       </div>
     </div>
   </div>
@@ -43,6 +45,7 @@ const StatCard = ({ icon: Icon, label, value, color, bg, colors }) => (
 
 export default function StatsBar({ persons, attendance, dates }) {
   const { colors, isDark } = useTheme();
+  const isMobile = useIsMobile(); // Fix #6
   const totalMembers = persons.length;
 
   const todayStr = getTodayString();
@@ -57,10 +60,10 @@ export default function StatsBar({ persons, attendance, dates }) {
 
   return (
     <div style={{ display: 'flex', gap: 'clamp(12px, 2vw, 16px)', marginBottom: 'clamp(20px, 3vw, 28px)', flexWrap: 'wrap' }}>
-      <StatCard icon={Users}     label="Total Members"   value={totalMembers}      color="#6366f1" bg={isDark ? '#1e1b4b' : '#eef2ff'} colors={colors} />
-      <StatCard icon={UserCheck} label="Present Today"   value={todayPresent}      color={colors.success} bg={colors.successBg} colors={colors} />
-      <StatCard icon={UserX}     label="Absent Today"    value={todayAbsent}        color={colors.error} bg={colors.errorBg} colors={colors} />
-      <StatCard icon={BarChart2} label="Attendance Rate" value={`${rate}%`}         color={colors.text} bg={colors.bgTertiary} colors={colors} />
+      <StatCard icon={Users}     label="Total Members"   value={totalMembers}  color="#6366f1" bg={isDark ? '#1e1b4b' : '#eef2ff'} colors={colors} isMobile={isMobile} />
+      <StatCard icon={UserCheck} label="Present Today"   value={todayPresent}  color={colors.success} bg={colors.successBg} colors={colors} isMobile={isMobile} />
+      <StatCard icon={UserX}     label="Absent Today"    value={todayAbsent}   color={colors.error}   bg={colors.errorBg}  colors={colors} isMobile={isMobile} />
+      <StatCard icon={BarChart2} label="Attendance Rate" value={`${rate}%`}    color={colors.text}    bg={colors.bgTertiary} colors={colors} isMobile={isMobile} />
     </div>
   );
 }

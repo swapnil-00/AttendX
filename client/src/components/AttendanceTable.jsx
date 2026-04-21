@@ -1,17 +1,10 @@
 import { useRef, useState, useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+// Fix #9 & #10 — removed local duplicates; import from shared dateUtils
+import { normalizeDate, getTodayString } from '../utils/dateUtils';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-function normalizeDate(d) {
-  if (!d) return '';
-  if (typeof d === 'string') return d.slice(0, 10);
-  return new Date(d).toISOString().slice(0, 10);
-}
-function getTodayStr() {
-  const n = new Date();
-  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
-}
 const isSundayDate = (d) => new Date(d + 'T12:00:00').getDay() === 0;
 const isPastDate   = (d, t) => d < t;
 const isFutureDate = (d, t) => d > t;
@@ -118,7 +111,8 @@ function SkeletonRow({ cols }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function AttendanceTable({ persons, attendance, dates, selectedMonth, onMonthChange, onToggle, onDelete, loading }) {
   const { colors, isDark } = useTheme();
-  const todayStr = getTodayStr();
+  // Fix #10 — use shared getTodayString instead of local duplicate getTodayStr
+  const todayStr = getTodayString();
 
   const [unlockedCell, setUnlockedCell]   = useState(null);
   const [pressingCell, setPressingCell]   = useState(null);
@@ -170,16 +164,18 @@ export default function AttendanceTable({ persons, attendance, dates, selectedMo
 
   const lookup = {};
   attendance.forEach(a => {
+    // Fix #9 — uses imported normalizeDate instead of local duplicate
     lookup[`${parseInt(a.person_id)}_${normalizeDate(a.date)}`] = a.status;
   });
   const getStatus = (pid, d) => lookup[`${parseInt(pid)}_${d}`] || null;
   const countP    = (pid)    => dates.filter(d => getStatus(pid,d) === 'P').length;
   const countA    = (pid)    => dates.filter(d => getStatus(pid,d) === 'A').length;
 
+  // Fix #26 — Extended from 12 to 24 months lookback
   const monthOptions = [];
   const now = new Date();
-  for (let i=11; i>=0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+  for (let i = 23; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     monthOptions.push({
       val: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`,
       label: d.toLocaleString('default', { month:'long', year:'numeric' }),

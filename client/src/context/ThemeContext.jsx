@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage'; // Fix #13 & #25
 
 const ThemeContext = createContext();
 
@@ -11,17 +12,26 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
+  // Fix #13 & #25 — use shared useLocalStorage hook instead of raw localStorage calls
+  const [storedTheme, setStoredTheme] = useLocalStorage('theme', null);
+
   const [isDark, setIsDark] = useState(() => {
-    const saved = localStorage.getItem('theme');
-    return saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (storedTheme === 'dark') return true;
+    if (storedTheme === 'light') return false;
+    // Fall back to system preference
+    return typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
 
-  const toggleTheme = () => setIsDark(prev => !prev);
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    setStoredTheme(next ? 'dark' : 'light');
+  };
 
   const theme = {
     isDark,
@@ -47,6 +57,7 @@ export const ThemeProvider = ({ children }) => {
       cardBorder: '#262626',
       hover: '#1f1f1f',
       shadow: 'rgba(0, 0, 0, 0.5)',
+      isDark: true,
     } : {
       // Light mode colors
       bg: '#ffffff',
@@ -68,6 +79,7 @@ export const ThemeProvider = ({ children }) => {
       cardBorder: '#e5e7eb',
       hover: '#f9fafb',
       shadow: 'rgba(0, 0, 0, 0.05)',
+      isDark: false,
     }
   };
 

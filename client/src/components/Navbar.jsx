@@ -1,10 +1,11 @@
 import { Grid3x3, Plus, Download, Loader2, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useIsMobile } from '../hooks/useIsMobile'; // Fix #6
 
-// Fix #15 — Mobile responsive navbar
 export default function Navbar({ onAddPerson, onDownload, isDownloading }) {
   const { isDark, toggleTheme, colors } = useTheme();
-  
+  const isMobile = useIsMobile(); // Fix #6 — reactive, not stale window.innerWidth
+
   return (
     <nav
       style={{
@@ -36,7 +37,7 @@ export default function Navbar({ onAddPerson, onDownload, isDownloading }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 2vw, 10px)' }}>
           <div
             style={{
-              width: 'clamp(32px, 6vw, 36px)', 
+              width: 'clamp(32px, 6vw, 36px)',
               height: 'clamp(32px, 6vw, 36px)',
               background: isDark ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : '#0a0a0a',
               borderRadius: 'clamp(8px, 2vw, 10px)',
@@ -64,9 +65,9 @@ export default function Navbar({ onAddPerson, onDownload, isDownloading }) {
               height: 'clamp(36px, 7vw, 40px)',
               borderRadius: 'clamp(6px, 1.5vw, 8px)',
               border: `1.5px solid ${colors.border}`,
-              background: colors.cardBg, 
+              background: colors.cardBg,
               color: colors.text,
-              cursor: 'pointer', 
+              cursor: 'pointer',
               transition: 'all 150ms ease',
             }}
             onMouseEnter={e => { e.currentTarget.style.background = colors.hover; e.currentTarget.style.borderColor = colors.textTertiary; }}
@@ -83,7 +84,7 @@ export default function Navbar({ onAddPerson, onDownload, isDownloading }) {
               padding: 'clamp(7px, 1.5vw, 8px) clamp(10px, 2vw, 14px)',
               borderRadius: 'clamp(6px, 1.5vw, 8px)',
               border: `1.5px solid ${colors.border}`,
-              background: colors.cardBg, 
+              background: colors.cardBg,
               color: colors.text,
               fontWeight: 500, fontSize: 'clamp(0.8rem, 1.8vw, 0.875rem)',
               cursor: 'pointer', transition: 'all 150ms ease',
@@ -92,7 +93,8 @@ export default function Navbar({ onAddPerson, onDownload, isDownloading }) {
             onMouseEnter={e => { e.currentTarget.style.background = colors.hover; e.currentTarget.style.borderColor = colors.textTertiary; }}
             onMouseLeave={e => { e.currentTarget.style.background = colors.cardBg; e.currentTarget.style.borderColor = colors.border; }}
           >
-            <Plus size={window.innerWidth < 640 ? 16 : 15} strokeWidth={2.5} />
+            {/* Fix #6 — isMobile instead of window.innerWidth < 640 */}
+            <Plus size={isMobile ? 16 : 15} strokeWidth={2.5} />
             <span className="nav-btn-text">Add Person</span>
           </button>
 
@@ -108,14 +110,18 @@ export default function Navbar({ onAddPerson, onDownload, isDownloading }) {
               background: isDownloading ? colors.textTertiary : (isDark ? '#3b82f6' : '#111827'),
               color: '#ffffff',
               fontWeight: 500, fontSize: 'clamp(0.8rem, 1.8vw, 0.875rem)',
-              cursor: isDownloading ? 'not-allowed' : 'pointer', 
+              cursor: isDownloading ? 'not-allowed' : 'pointer',
               transition: 'background 150ms ease',
               whiteSpace: 'nowrap',
             }}
             onMouseEnter={e => !isDownloading && (e.currentTarget.style.background = isDark ? '#2563eb' : '#1f2937')}
             onMouseLeave={e => !isDownloading && (e.currentTarget.style.background = isDark ? '#3b82f6' : '#111827')}
           >
-            {isDownloading ? <Loader2 size={window.innerWidth < 640 ? 16 : 15} strokeWidth={2.5} className="animate-spin" /> : <Download size={window.innerWidth < 640 ? 16 : 15} strokeWidth={2.5} />}
+            {/* Fix #6 — isMobile instead of window.innerWidth < 640 */}
+            {isDownloading
+              ? <Loader2 size={isMobile ? 16 : 15} strokeWidth={2.5} className="animate-spin" />
+              : <Download size={isMobile ? 16 : 15} strokeWidth={2.5} />
+            }
             <span className="nav-btn-text">{isDownloading ? 'Generating...' : 'Download Excel'}</span>
           </button>
         </div>

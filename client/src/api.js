@@ -3,8 +3,12 @@ import { showToast } from './components/Toast';
 
 // In production (Vercel), set VITE_API_URL to your backend URL (e.g. Railway/Render).
 // In development, leave unset — Vite proxy handles /api → localhost:3001.
+// Fix #3 — Include API key header on all requests if VITE_API_KEY is configured.
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '',
+  headers: import.meta.env.VITE_API_KEY
+    ? { 'x-api-key': import.meta.env.VITE_API_KEY }
+    : {},
 });
 
 // Global error handling — surface server/network errors as toasts

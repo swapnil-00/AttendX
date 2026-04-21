@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useIsMobile } from '../hooks/useIsMobile'; // Fix #6
 
 let toastId = 0;
 const listeners = [];
 
-// Fix #7 — Support 'success' | 'error' type
 export function showToast(msg, type = 'success') {
   const id = ++toastId;
   listeners.forEach(fn => fn({ id, msg, type }));
@@ -13,6 +13,7 @@ export function showToast(msg, type = 'success') {
 
 export default function ToastContainer() {
   const { colors, isDark } = useTheme();
+  const isMobile = useIsMobile(); // Fix #6 — reactive, replaces window.innerWidth < 640
   const [toasts, setToasts] = useState([]);
 
   useEffect(() => {
@@ -33,16 +34,16 @@ export default function ToastContainer() {
   if (!toasts.length) return null;
 
   return (
-    <div style={{ 
-      position: 'fixed', 
-      bottom: 'clamp(16px, 3vw, 24px)', 
-      right: 'clamp(16px, 3vw, 24px)', 
+    <div style={{
+      position: 'fixed',
+      bottom: 'clamp(16px, 3vw, 24px)',
+      right: 'clamp(16px, 3vw, 24px)',
       left: 'clamp(16px, 3vw, auto)',
       maxWidth: 'clamp(280px, 90vw, 400px)',
-      zIndex: 1000, 
-      display: 'flex', 
-      flexDirection: 'column', 
-      gap: 'clamp(6px, 1.5vw, 8px)' 
+      zIndex: 1000,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 'clamp(6px, 1.5vw, 8px)'
     }}>
       {toasts.map(t => {
         const isError = t.type === 'error';
@@ -68,9 +69,10 @@ export default function ToastContainer() {
               wordBreak: 'break-word',
             }}
           >
+            {/* Fix #6 — isMobile instead of window.innerWidth < 640 */}
             {isError
-              ? <XCircle size={window.innerWidth < 640 ? 15 : 16} color={colors.error} strokeWidth={2.5} />
-              : <CheckCircle2 size={window.innerWidth < 640 ? 15 : 16} color={colors.success} strokeWidth={2.5} />
+              ? <XCircle size={isMobile ? 15 : 16} color={colors.error} strokeWidth={2.5} />
+              : <CheckCircle2 size={isMobile ? 15 : 16} color={colors.success} strokeWidth={2.5} />
             }
             {t.msg}
           </div>

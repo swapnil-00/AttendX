@@ -1,16 +1,27 @@
 import { useRef, useState } from 'react';
 import { UserPlus, Loader2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useIsMobile } from '../hooks/useIsMobile'; // Fix #6
+import { validateName } from '../utils/sanitize';   // Fix #8 & #14 — use shared validation
+import { showToast } from './Toast';
 
 export default function AddPersonPanel({ onAdd }) {
   const { colors } = useTheme();
+  const isMobile = useIsMobile(); // Fix #6
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return;
+
+    // Fix #14 — validate using shared sanitize utility (checks length + HTML injection)
+    const { valid, error } = validateName(name);
+    if (!valid) {
+      showToast(error, 'error');
+      return;
+    }
+
     setLoading(true);
     try {
       await onAdd(name.trim());
@@ -33,7 +44,8 @@ export default function AddPersonPanel({ onAdd }) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1.5vw, 8px)', marginBottom: 'clamp(12px, 2vw, 16px)' }}>
-        <UserPlus size={window.innerWidth < 640 ? 16 : 18} color={colors.textSecondary} strokeWidth={2} />
+        {/* Fix #6 — isMobile instead of window.innerWidth < 640 */}
+        <UserPlus size={isMobile ? 16 : 18} color={colors.textSecondary} strokeWidth={2} />
         <span style={{ fontWeight: 600, fontSize: 'clamp(0.875rem, 2vw, 0.9375rem)', color: colors.text }}>Add New Member</span>
       </div>
 
@@ -45,6 +57,7 @@ export default function AddPersonPanel({ onAdd }) {
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Enter full name..."
+          maxLength={255}
           style={{
             flex: '1 1 auto',
             minWidth: 'clamp(200px, 50vw, 300px)',

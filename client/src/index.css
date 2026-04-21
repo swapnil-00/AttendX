@@ -4,12 +4,44 @@
 
 /* CSS custom properties — kept in sync with ThemeContext.jsx */
 :root {
-  --bg:       #ffffff;
-  --bg-hover: #f9fafb;
+  --bg:           #ffffff;
+  --bg-hover:     #f9fafb;
+  --text:         #0a0a0a;
+  --text-hover:   #111827;
+  --card:         #ffffff;
+  --focus-ring:   #0a0a0a;      /* Fix #17 — adaptive focus ring colour */
+  --stat-hover:   #111827;      /* Fix #16 — stat number hover in light mode */
+  /* ErrorBoundary (Fix #15) */
+  --eb-bg:        #fafafa;
+  --eb-card:      #ffffff;
+  --eb-border:    #e5e7eb;
+  --eb-title:     #111827;
+  --eb-body:      #6b7280;
+  --eb-pre-bg:    #f9fafb;
+  --eb-pre-color: #dc2626;
+  --eb-summary:   #6b7280;
+  --eb-btn-bg:    #111827;
+  --eb-btn-hover: #1f2937;
 }
 html.dark {
-  --bg:       #141414;
-  --bg-hover: #1f1f1f;
+  --bg:           #141414;
+  --bg-hover:     #1f1f1f;
+  --text:         #f5f5f5;
+  --text-hover:   #f5f5f5;      /* Fix #16 — white text on dark hover */
+  --card:         #141414;
+  --focus-ring:   #f5f5f5;      /* Fix #17 — light ring in dark mode */
+  --stat-hover:   #f5f5f5;      /* Fix #16 — stat number hover in dark mode */
+  /* ErrorBoundary (Fix #15) */
+  --eb-bg:        #0a0a0a;
+  --eb-card:      #141414;
+  --eb-border:    #262626;
+  --eb-title:     #f5f5f5;
+  --eb-body:      #a3a3a3;
+  --eb-pre-bg:    #1a1a1a;
+  --eb-pre-color: #f87171;
+  --eb-summary:   #a3a3a3;
+  --eb-btn-bg:    #f5f5f5;
+  --eb-btn-hover: #e5e5e5;
 }
 
 * {
@@ -111,26 +143,92 @@ html.dark body {
   20%, 40% { transform: scale(1); }
 }
 
-/* Input focus ring */
+/* Fix #17 — Adaptive focus ring: dark in light mode, light in dark mode */
 input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #0a0a0a;
+  box-shadow: 0 0 0 2px var(--focus-ring);
 }
 
-/* Stat card hover number */
-.stat-card:hover .stat-number { color: #111827; }
+/* Fix #16 — Stat card hover number respects dark mode via CSS var */
+.stat-card:hover .stat-number { color: var(--stat-hover); }
+
+/* ─── Fix #15 — ErrorBoundary dark-mode styles ──────────────────────────── */
+.error-boundary-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--eb-bg);
+  padding: 24px;
+}
+.error-boundary-card {
+  background: var(--eb-card);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--eb-border);
+}
+.error-boundary-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: #fef2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+.error-boundary-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--eb-title);
+  margin: 0 0 12px;
+}
+.error-boundary-body {
+  font-size: 0.9375rem;
+  color: var(--eb-body);
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+.error-boundary-btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  background: var(--eb-btn-bg);
+  color: var(--bg);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 150ms;
+}
+.error-boundary-btn:hover { background: var(--eb-btn-hover); }
+.error-boundary-summary { color: var(--eb-summary); }
+.error-boundary-pre {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--eb-pre-bg);
+  border-radius: 8px;
+  font-size: 0.75rem;
+  color: var(--eb-pre-color);
+  overflow: auto;
+  max-height: 200px;
+  text-align: left;
+}
 
 /* Mobile responsive styles */
 @media (max-width: 768px) {
   body {
     font-size: 14px;
   }
-  
+
   /* Reduce animations on mobile for better performance */
   .stat-card {
     transition: none !important;
   }
-  
+
   .att-pill:hover {
     transform: scale(1.05);
   }
@@ -139,7 +237,7 @@ input:focus {
 /* Fix #15 — Mobile responsive navbar: hide button text on very small screens */
 @media (max-width: 640px) {
   .nav-btn-text { display: none; }
-  
+
   /* Optimize touch targets for mobile */
   button {
     min-height: 44px;
@@ -172,13 +270,11 @@ input:focus {
   * {
     -webkit-tap-highlight-color: transparent;
   }
-  
+
   input, select, button {
     font-size: 16px !important; /* Prevents zoom on iOS */
   }
 }
-
-
 
 /* Fix for sticky positioning on iOS */
 @supports (-webkit-overflow-scrolling: touch) {
