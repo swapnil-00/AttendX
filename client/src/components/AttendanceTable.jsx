@@ -277,9 +277,7 @@ export default function AttendanceTable({
               Attendance Register
             </h2>
             <p style={{ fontSize: '0.8rem', color: '#9ca3af', margin: '2px 0 0' }}>
-              {persons.length} member{persons.length !== 1 ? 's' : ''} ·{' '}
-              Click today's cell to toggle · Hold 3 s to edit past days ·{' '}
-              <span style={{ color: '#f59e0b', fontWeight: 600 }}>☀️ = Sunday holiday</span>
+              {persons.length} member{persons.length !== 1 ? 's' : ''}
             </p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -304,24 +302,7 @@ export default function AttendanceTable({
           </div>
         </div>
 
-        {/* Legend */}
-        <div style={{
-          padding: '8px 24px',
-          display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap',
-          borderBottom: '1px solid #f3f4f6', background: '#fefefe',
-        }}>
-          {[
-            { color: '#dcfce7', text: '#16a34a', label: 'P  Present' },
-            { color: '#fee2e2', text: '#dc2626', label: 'A  Absent' },
-            { color: '#f9fafb', text: '#d1d5db', label: '—  Past (hold 3s to edit)' },
-            { color: '#fef3c7', text: '#d97706', label: '☀️  Sunday holiday' },
-          ].map(({ color, text, label }) => (
-            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.7rem', color: '#6b7280' }}>
-              <div style={{ width: 28, height: 18, background: color, borderRadius: 4, border: `1px solid ${color}` }} />
-              <span style={{ color: text, fontWeight: 600 }}>{label}</span>
-            </div>
-          ))}
-        </div>
+
 
         {/* Table */}
         <div style={{ overflowX: 'auto' }}>
@@ -397,7 +378,7 @@ export default function AttendanceTable({
                     <td style={{
                       padding: '10px 16px', fontWeight: 500, fontSize: '0.875rem',
                       color: '#111827', whiteSpace: 'nowrap',
-                      position: 'sticky', left: 0, background: 'inherit',
+                      position: 'sticky', left: 0, background: '#ffffff',
                       borderRight: '1px solid #f3f4f6', zIndex: 4,
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
