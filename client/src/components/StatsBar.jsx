@@ -11,8 +11,8 @@ const StatCard = ({ icon: Icon, label, value, color, bg, colors }) => (
       borderRadius: 'clamp(12px, 2vw, 16px)',
       padding: 'clamp(16px, 3vw, 24px)',
       boxShadow: `0 1px 3px ${colors.shadow}`,
-      flex: '1 1 calc(50% - 8px)',
-      minWidth: 'clamp(140px, 30vw, 200px)',
+      flex: '1 1 180px',   /* 4 per row on desktop, 2 on tablet, 1 on mobile */
+      minWidth: 0,
       transition: 'box-shadow 200ms ease, transform 200ms ease',
       cursor: 'default',
     }}
